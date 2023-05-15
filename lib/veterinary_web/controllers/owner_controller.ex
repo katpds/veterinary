@@ -3,6 +3,9 @@ defmodule VeterinaryWeb.OwnerController do
 
   alias Veterinary.Owners
   alias Veterinary.Owners.Owner
+  alias Veterinary.Pets
+  alias Veterinary.Pets.Pet
+
 
   action_fallback VeterinaryWeb.FallbackController
 
@@ -40,4 +43,17 @@ defmodule VeterinaryWeb.OwnerController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  ### functions
+
+  def show_document(conn, %{"document_id" => document_id}) do
+    owner = Owners.get_owner_document!(String.to_integer(document_id))
+    render(conn, :show_document, owner: owner)
+  end
+
+  def get_pets_owner(conn, %{"id" => id}) do
+    pets = Owners.get_pets_owner!(id)
+    render(conn, :get_pets_owner, pets: pets)
+  end
+
 end

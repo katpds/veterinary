@@ -19,7 +19,6 @@ defmodule Veterinary.Owners do
   """
   def list_owners do
     Repo.all(Owner) |> Repo.preload(:pets)
-
   end
 
   @doc """
@@ -36,9 +35,9 @@ defmodule Veterinary.Owners do
       ** (Ecto.NoResultsError)
 
   """
-  def get_owner!(id), do: Repo.get!(Owner, id) |> Repo.preload(:cursos)
+  def get_owner!(id), do: Repo.get!(Owner, id) |> Repo.preload(:pets)
 
-  #def get_owner!(id), do: Repo.get!(Owner, document_id)
+
   @doc """
   Creates a owner.
 
@@ -104,4 +103,18 @@ defmodule Veterinary.Owners do
   def change_owner(%Owner{} = owner, attrs \\ %{}) do
     Owner.changeset(owner, attrs)
   end
+
+
+  ###functions
+
+  def get_owner_document!(document_id) do
+    query= from p in Veterinary.Owners.Owner, where: p.document_id == ^document_id, select: p
+    Repo.one!(query, prefix: "public") |> Repo.preload(:pets)
+  end
+
+  def get_pets_owner!(id) do
+    query= from m in Veterinary.Pets.Pet, where: m.owner_id == ^id, select: m
+    Repo.all(query)
+  end
+
 end

@@ -5,8 +5,8 @@ defmodule Veterinary.Pets do
 
   import Ecto.Query, warn: false
   alias Veterinary.Repo
-
   alias Veterinary.Pets.Pet
+  alias Veterinary.Owners.Owner
 
   @doc """
   Returns the list of pets.
@@ -100,5 +100,22 @@ defmodule Veterinary.Pets do
   """
   def change_pet(%Pet{} = pet, attrs \\ %{}) do
     Pet.changeset(pet, attrs)
+  end
+
+  ### Functions
+
+  def get_owner_pet!(id) do
+    query=from(p in Veterinary.Pets.Pet,
+      join: o in Veterinary.Owners.Owner,
+      on: p.owner_id == o.id,
+      where: p.id == ^id,
+      select: o)
+
+    Repo.one!(query, prefix: "public") #|> Repo.preload(:owners)
+  end
+
+  def get_pet_name!(name) do
+    query= from p in Veterinary.Pets.Pet, where: p.name == ^name, select: p
+    Repo.one!(query, prefix: "public") #|> Repo.preload(:pets)
   end
 end

@@ -3,6 +3,8 @@ defmodule VeterinaryWeb.PetController do
 
   alias Veterinary.Pets
   alias Veterinary.Pets.Pet
+  alias Veterinary.Owners
+  alias Veterinary.Owners.Owner
 
   action_fallback VeterinaryWeb.FallbackController
 
@@ -39,5 +41,17 @@ defmodule VeterinaryWeb.PetController do
     with {:ok, %Pet{}} <- Pets.delete_pet(pet) do
       send_resp(conn, :no_content, "")
     end
+  end
+
+  ### Functions
+
+  def get_owner_pet(conn, %{"id" => id}) do
+    owner = Pets.get_owner_pet!(id)
+    render(conn, :get_owner_pet, owner: owner)
+  end
+
+  def get_pet_name(conn, %{"name" => name}) do
+    pet = Pets.get_pet_name!(name)
+    render(conn, :get_pet_name, pet: pet)
   end
 end
